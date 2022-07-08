@@ -3,10 +3,8 @@ package com.connorshillady.springproject_07072022.api;
 import com.connorshillady.springproject_07072022.model.Person;
 import com.connorshillady.springproject_07072022.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -18,16 +16,37 @@ public class PersonController {
   public PersonController(PersonService personService) {
     this.personService = personService;
   }
-  @PostMapping
-  public void addPerson(Person person) {
-    personService.addPerson(new Person(person.getId(), person.getName()));
-//    personService.addPerson(new Person(UUID.randomUUID(), "Bob"));
-//    personService.addPerson(new Person(UUID.randomUUID(), "Sue"));
-//    personService.addPerson(new Person(UUID.randomUUID(), "Molly"));
-//    personService.addPerson(new Person(UUID.randomUUID(), "Don"));
+  
+  @GetMapping(value = "/post/{id}/{name}")
+  public void addPerson(@PathVariable UUID id, @PathVariable String name) {
+    personService.addPerson(new Person(id, name));
+  }
+  
+  @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    /*
+    {
+        "id": "",
+        "name": "james"
+    }
+     */
+  public void addPerson(@RequestBody Person person){
+    personService.addPerson(person);
   }
   @GetMapping
   public ArrayList<Person> getAllPeople() {
     return personService.selectAllPeople();
+  }
+  @GetMapping(value = "/{id}")
+  public Person getPerson(@PathVariable("id") UUID id) {
+    return personService.getPersonById(id).orElse(null);
+  }
+  
+  @DeleteMapping(value = "/{id}")
+  public int deletePerson(@PathVariable("id") UUID id){
+    return personService.deletePerson(id);
+  }
+  @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public int updatePerson(@PathVariable("id") UUID id, @RequestBody Person person){
+    return personService.updatePerson(id, person);
   }
 }

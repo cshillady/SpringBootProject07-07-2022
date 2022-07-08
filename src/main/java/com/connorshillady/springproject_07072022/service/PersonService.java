@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
+
 
 @Service
 public class PersonService {
@@ -19,5 +22,14 @@ public class PersonService {
   }
   public ArrayList<Person> selectAllPeople() {
     return personDAO.selectAllPeople();
+  }
+  public Optional<Person> getPersonById(UUID id) {
+    return personDAO.selectPersonById(id);
+  }
+  public int deletePerson(UUID id) {
+    return personDAO.deletePersonById(id);
+  }
+  public int updatePerson(UUID id, Person person) {
+    return personDAO.updatePersonById(id, person);
   }
 }
